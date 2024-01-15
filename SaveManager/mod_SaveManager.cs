@@ -54,36 +54,34 @@ namespace V1ld_SaveManager
     {
         private const int MaxQuickSaves = 10;
 
-        private static bool m_initializedSavedData;
+        private static bool DEBUG = false;
 
-        private static JObject savedData;
+        private static JObject _savedData;
+
+        private static JObject SavedData
+        {
+            get 
+            {
+                if (_savedData == null)
+                    _savedData = ReadSaveFor("SaveManager");
+                return _savedData;
+            }
+        }
 
         public static int QuicksaveCycleNumber
         {
             get
             {
-                CheckSavedDataInitialized();
-                var n = savedData["quicksaveCycleNumber"]?.Value<int?>() ?? 0;
-                // Game.Console.AddMessage($"read value is {n}");
+                var n = SavedData["quicksaveCycleNumber"]?.Value<int?>() ?? (MaxQuickSaves-1);
+                Log($"read: value={n}");
                 return n % MaxQuickSaves;
             }
 
             set
             {
-                CheckSavedDataInitialized();
-                savedData["quicksaveCycleNumber"] = value % MaxQuickSaves;
-                // Game.Console.AddMessage($"write value is {value}, saveData is {savedData.ToString()}");
-                WriteSaveFor("SaveManager", savedData);
-            }
-        }
-
-        private static void CheckSavedDataInitialized()
-        {
-            if (!m_initializedSavedData)
-            {
-                savedData = ReadSaveFor("SaveManager");
-                // Game.Console.AddMessage($"Initialized, saveData is {savedData.ToString()}");
-                m_initializedSavedData = true;
+                SavedData["quicksaveCycleNumber"] = value % MaxQuickSaves;
+                Log($"write: value={value} savedData={SavedData}");
+                WriteSaveFor("SaveManager", SavedData);
             }
         }
 
@@ -122,19 +120,18 @@ namespace V1ld_SaveManager
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(saveFile));
-
-                // Calling ToString() is worse for large JSON objects than saveData.WritetTo() but 
-                // Patchwork has problems with the latter that I have no time to dig into, so
                 File.WriteAllText(saveFile, saveData.ToString());
 
-                /*
+                /* 
+                // Calling ToString() is worse for large JSON objects than saveData.WritetTo() but 
+                // Patchwork has problems with the latter that I have no time to dig into, so
                 using (StreamWriter streamWriter = new StreamWriter(saveFile))
                 using (JsonTextWriter writer = new JsonTextWriter(streamWriter))
                 {
-                    // streamWriter.Write(saveData.ToString());  // Calling ToString() not great for large objects
                     writer.Formatting = Formatting.Indented;
-                    saveData.WriteTo(writer);  // PatchworkLauncher gives a "key missing" error at final patch here
-                } */
+                    saveData.WriteTo(writer);  // This makes PatchworkLauncher emit a "key missing" error at patch time
+                }
+                */
             }
             catch (Exception ex)
             {
@@ -150,6 +147,12 @@ namespace V1ld_SaveManager
             string sessionPath = Path.Combine(basePath, GameState.PlayerCharacter.SessionID.ToString());
             string modFile = Path.Combine(sessionPath, m + ".json");
             return Path.GetFullPath(modFile);
+        }
+
+        private static void Log(string message)
+        {
+            if (DEBUG)
+                Game.Console.AddMessage(message);
         }
     }
 }

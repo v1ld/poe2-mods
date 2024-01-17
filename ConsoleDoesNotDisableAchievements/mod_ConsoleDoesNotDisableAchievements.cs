@@ -40,15 +40,15 @@ namespace V1ld_ConsoleDoesNotDisableAchievements
     [ModifiesType]
     public class V1ld_AchievementTracker : AchievementTracker
     {
-        [ModifiesMember("OnyxAwake")]
-        public override void OnyxAwake()
-        {
-            base.OnyxAwake();
-            //if (GameState.Instance.CheatsEnabled)
-            //{
-            //    DisableAchievements = true;
-            //}
-        }
+        //[ModifiesMember("OnyxAwake")]
+        //public override void OnyxAwake()
+        //{
+        //    base.OnyxAwake();
+        //    //if (GameState.Instance.CheatsEnabled)
+        //    //{
+        //    //    DisableAchievements = true;
+        //    //}
+        //}
 
         [ModifiesMember("get_m_disableAchievements")]
         private bool get_m_disableAchievements()

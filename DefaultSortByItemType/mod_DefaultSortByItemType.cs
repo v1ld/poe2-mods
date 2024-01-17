@@ -1,6 +1,5 @@
 ﻿using Game;
 using Game.GameData;
-using static Game.GameData.WeaponType;
 using Game.UI;
 using Patchwork;
 using System;
@@ -11,54 +10,134 @@ namespace V1ld_DefaultSortByItemType
     [NewType]
     internal static class V1ldInventorySort
     {
-        // Weapon sorting order
-        private static WeaponType[] weaponOrder = {
-            Unarmed,
-
-            Dagger,
-            Stiletto,
-            Rapier,
-            Sabre,
-            Sword,
-            Estoc,
-            GreatSword,
-
-            Spear,
-            Pike,
-
-            Hatchet,
-            BattleAxe,
-            Pollaxe,
-
-            Club,
-            Flail,
-            Mace,
-            MorningStar,
-            WarHammer,
-
-            Quarterstaff,
-
-            Wand,
-            Sceptre,
-            Rod,
-
-            HuntingBow,
-            WarBow,
-
-            Crossbow,
-            Arbalest,
-
-            Pistol,
-            Blunderbuss,
-            Arquebus,
-
-            SmallShield,
-            MediumShield,
-            LargeShield,
+        // Filter sorting order
+        public static ItemFilter[] filterOrder = {
+            ItemFilter.Weapons,
+            ItemFilter.Armor,
+            ItemFilter.Clothing,
+            ItemFilter.Consumables,
+            ItemFilter.Quest,
+            ItemFilter.Artifact,
+            ItemFilter.Misc,
+            ItemFilter.FoodOrDrink,
+            ItemFilter.ShipCrew,
+            ItemFilter.ShipSails,
+            ItemFilter.ShipHulls,
+            ItemFilter.ShipFlags,
+            ItemFilter.ShipCannons,
+            ItemFilter.ShipUpgrades,
+            ItemFilter.ShipPermanentUpgrades,
+            ItemFilter.Ingredients,
         };
 
+        // Weapon sorting order
+        private static WeaponType[] weaponOrder = {
+            WeaponType.Unarmed,
+
+            WeaponType.Dagger,
+            WeaponType.Stiletto,
+            WeaponType.Rapier,
+            WeaponType.Sabre,
+            WeaponType.Sword,
+            WeaponType.Estoc,
+            WeaponType.GreatSword,
+
+            WeaponType.Spear,
+            WeaponType.Pike,
+
+            WeaponType.Hatchet,
+            WeaponType.BattleAxe,
+            WeaponType.Pollaxe,
+
+            WeaponType.Club,
+            WeaponType.Flail,
+            WeaponType.Mace,
+            WeaponType.MorningStar,
+            WeaponType.WarHammer,
+
+            WeaponType.Quarterstaff,
+
+            WeaponType.Wand,
+            WeaponType.Sceptre,
+            WeaponType.Rod,
+
+            WeaponType.HuntingBow,
+            WeaponType.WarBow,
+
+            WeaponType.Crossbow,
+            WeaponType.Arbalest,
+
+            WeaponType.Pistol,
+            WeaponType.Blunderbuss,
+            WeaponType.Arquebus,
+
+            WeaponType.SmallShield,
+            WeaponType.MediumShield,
+            WeaponType.LargeShield,
+        };
+
+        // Armor sorting order
+        private static ArmorCategory[] armorOrder = {
+            ArmorCategory.Light,
+            ArmorCategory.Medium,
+            ArmorCategory.Heavy,
+        };
+
+        // Consumable sorting order
+        private static ConsumableType[] consumableOrder = {
+            ConsumableType.Potion,
+            ConsumableType.Drug,
+            ConsumableType.Scroll,
+            ConsumableType.Figurine,
+            ConsumableType.Food,
+            ConsumableType.Drink,
+            ConsumableType.Explosive,
+            ConsumableType.Trap,
+        };
+
+        // Annoyingly, Patchwork doesn't seem to like generics so we have to do it the long way
+        /* class InventorySorter<T>
+        {
+            private readonly Dictionary<T, int> m_sortOrder;
+
+            public InventorySorter(T[] ordering)
+            {
+                m_sortOrder = new Dictionary<T, int>();
+                for (int i = 0; i < ordering.Length; i++)
+                {
+                    m_sortOrder[ordering[i]] = i;
+                }
+            }
+
+            public int Compare(T a, T b, string nameA, string nameB)
+            {
+                // return negative if a < b, postive if a > b and compare names if a == b
+                if (m_sortOrder[a] != m_sortOrder[b])
+                    return m_sortOrder[a] - m_sortOrder[b];
+                else
+                    return string.Compare(nameA, nameB, true);
+            }
+        } */
+
+        private static Dictionary<ItemFilter, int> _filterSortOrder;
+        private static Dictionary<ItemFilter, int> FilterSortOrder
+        {
+            get
+            {
+                if (_filterSortOrder == null)
+                {
+                    _filterSortOrder = new Dictionary<ItemFilter, int>();
+                    for (int i = 0; i < filterOrder.Length; i++)
+                    {
+                        _filterSortOrder[filterOrder[i]] = i;
+                    }
+                }
+                return _filterSortOrder;
+            }
+        }
+
         private static Dictionary<WeaponType, int> _weaponSortOrder;
-        private static Dictionary<WeaponType, int> weaponSortOrder
+        private static Dictionary<WeaponType, int> WeaponSortOrder
         {
             get
             {
@@ -74,31 +153,52 @@ namespace V1ld_DefaultSortByItemType
             }
         }
 
-        public static int CompareEquippableWeapons(Equippable equippableA, Equippable equippableB)
+        private static Dictionary<ArmorCategory, int> _armorSortOrder;
+        private static Dictionary<ArmorCategory, int> ArmorSortOrder
         {
-            var wpnA = weaponSortOrder[equippableA.EquipmentType];
-            var wpnB = weaponSortOrder[equippableB.EquipmentType];
-
-            if (wpnA == wpnB)
-                return string.Compare(equippableA.GetName(), equippableB.GetName(), true);
-            else
-                return wpnA - wpnB;
+            get
+            {
+                if (_armorSortOrder == null)
+                {
+                    _armorSortOrder = new Dictionary<ArmorCategory, int>();
+                    for (int i = 0; i < armorOrder.Length; i++)
+                    {
+                        _armorSortOrder[armorOrder[i]] = i;
+                    }
+                }
+                return _armorSortOrder;
+            }
         }
 
-        private static int CompareEquippableArmors(Equippable equippableA, Equippable equippableB)
+        private static Dictionary<ConsumableType, int> _consumableSortOrder;
+        private static Dictionary<ConsumableType, int> ConsumableSortOrder
         {
-            var armorA = equippableA.GetArmorComponent().ArmorCategory;
-            var armorB = equippableB.GetArmorComponent().ArmorCategory;
-
-            if (armorA == armorB)
-                return string.Compare(equippableA.GetName(), equippableB.GetName(), true);
-            else
-                return armorA - armorB; // category enum is [light, medium, heavy] so this works
+            get
+            {
+                if (_consumableSortOrder == null)
+                {
+                    _consumableSortOrder = new Dictionary<ConsumableType, int>();
+                    for (int i = 0; i < consumableOrder.Length; i++)
+                    {
+                        _consumableSortOrder[consumableOrder[i]] = i;
+                    }
+                }
+                return _consumableSortOrder;
+            }
         }
 
-        private static bool IsWeapon(PermittedEquipmentSlot pws)
+        public static int Compare(int a, int b, string nameA, string nameB)
         {
-            switch (pws)
+            // return negative if a < b, postive if a > b and compare names if a == b
+            if (a != b)
+                return a - b;
+            else
+                return string.Compare(nameA, nameB, true);
+        }
+
+        private static bool IsWeapon(Equippable a)
+        {
+            switch (a.PermittedEquipmentSlot)
             {
                 case PermittedEquipmentSlot.AnyWeapon:
                 case PermittedEquipmentSlot.PrimaryWeaponOnly:
@@ -110,59 +210,65 @@ namespace V1ld_DefaultSortByItemType
             }
         }
 
-        private static bool IsArmor(PermittedEquipmentSlot pws)
-        {
-            return PermittedEquipmentSlot.Armor == pws;
-        }
+        private static bool IsArmor(Equippable a) => a.PermittedEquipmentSlot == PermittedEquipmentSlot.Armor;
 
+        /* General strategy is to first sort by FilterType and then be more detailed within specific
+         * FilterTypes (Weapons, Armor, Consumables, Equippable Items). Default if no other match
+         * happens within a FilterType is to compare by name.
+         */
         public static int CompareWithinFilterType(Item a, Item b)
         {
-            if (a == b)
-                return 0;
+            if (a.ItemData.FilterType != b.ItemData.FilterType)
+                return FilterSortOrder[a.ItemData.FilterType] - FilterSortOrder[b.ItemData.FilterType];
 
-            //Game.Console.AddMessage($"1: a={a.GetName()} b={b.GetName()}");
+            Consumable consumableA = a as Consumable;
+            Consumable consumableB = b as Consumable;
+            if (consumableA != null && consumableB != null)
+                return Compare(ConsumableSortOrder[consumableA.ConsumableType], ConsumableSortOrder[consumableB.ConsumableType], a.GetName(), b.GetName());
+
             Equippable equippableA = a as Equippable;
             Equippable equippableB = b as Equippable;
+            if (equippableA != null && equippableB != null)
+            {
+                if (IsWeapon(equippableA) && IsWeapon(equippableB))
+                    return Compare(WeaponSortOrder[equippableA.EquipmentType], WeaponSortOrder[equippableB.EquipmentType], a.GetName(), b.GetName());
+                if (IsArmor(equippableA) && IsArmor(equippableB))
+                    return Compare(ArmorSortOrder[equippableA.GetArmorComponent().ArmorCategory], ArmorSortOrder[equippableB.GetArmorComponent().ArmorCategory], a.GetName(), b.GetName());
 
+                // Sort by equipment slot if not weapon or armor
+                var slotA = equippableA.PermittedEquipmentSlot;
+                var slotB = equippableB.PermittedEquipmentSlot;
+                if (slotA != slotB)
+                    return slotA - slotB;
+                else
+                    return string.Compare(a.GetName(), b.GetName(), true);
+            }
+
+            // Alphabetical by name is the fallback, but equippables get preference
             if (equippableA == null && equippableB == null)
                 return string.Compare(a.GetName(), b.GetName(), true);
-            if (equippableA == null)
+            else if (equippableA == null)
                 return 1;
-            if (equippableB == null)
+            else // (equippableB == null)
                 return -1;
-
-            var pwsA = equippableA.PermittedEquipmentSlot;
-            var pwsB = equippableB.PermittedEquipmentSlot;
-
-            //Game.Console.AddMessage($"2: a={a.GetName()} pwsA={pwsA} b={b.GetName()} pwsB={pwsB}");
-            if (IsWeapon(pwsA) && IsWeapon(pwsB))
-                return CompareEquippableWeapons(equippableA, equippableB);
-            if (IsArmor(pwsA) && IsArmor(pwsB))
-                return CompareEquippableArmors(equippableA, equippableB);
-
-            if (pwsA == pwsB)
-                return string.Compare(a.GetName(), b.GetName(), true);
-            else
-                return pwsA - pwsB;
         }
     }
 
     [ModifiesType]
     public class V1ld_BaseInventory : BaseInventory
     {
-        // Our main sorting function that we will hook in everywhere
+        // The primary sorting function that we will hook in everywhere
         [ModifiesMember("CompareItemsByItemType")]
         new public static int CompareItemsByItemType(Item a, Item b)
         {
+            if (a == b)
+                return 0;
             if (a == null)
                 return 1;
             if (b == null)
                 return -1;
 
-            if (a.ItemData.FilterType == b.ItemData.FilterType)
-                return V1ldInventorySort.CompareWithinFilterType(a, b);
-            else
-                return (a.ItemData.FilterType < b.ItemData.FilterType) ? -1 : 1;
+            return V1ldInventorySort.CompareWithinFilterType(a, b);
         }
 
         [ModifiesMember("CompareItemsForShop")]

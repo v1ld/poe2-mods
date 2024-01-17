@@ -143,7 +143,7 @@ namespace V1ld_SaveManager
 
         private static string GetSaveFilePath(string m)
         {
-            string basePath = Path.Combine(Application.dataPath, "../Mods/SavesForMods");
+            string basePath = Path.Combine(Application.persistentDataPath, "SavesForMods");
             string sessionPath = Path.Combine(basePath, GameState.PlayerCharacter.SessionID.ToString());
             string modFile = Path.Combine(sessionPath, m + ".json");
             return Path.GetFullPath(modFile);

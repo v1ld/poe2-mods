@@ -81,17 +81,21 @@ namespace V1ld_ConsoleDoesNotDisableAchievements
         }
     }
 
-    [ModifiesType]
-    public class V1ld_CharacterExportMetadata : CharacterExportMetadata
-    {
-        // This is how the Steam UGC stuff tracks downloaded characters from "cheat games"
-        [NewMember]
-        new public bool IsFromCheatGame
-        {
-            [NewMember]
-            get { return false; }
-            [NewMember]
-            set { return; }
-        }
-    }
+    // This doesn't work with Patchwork since there are no explicit getters/setters on the property.
+    // Doesn't matter for exports since we never mark the game as a cheat game. But Steam Workshop
+    // Characters will show up as cheat chars unfortunately.  Oh well.
+
+    //[ModifiesType]
+    //public class V1ld_CharacterExportMetadata : CharacterExportMetadata
+    //{
+    //    // This is how the Steam UGC stuff tracks downloaded characters from "cheat games"
+    //    [ModifiesMember("IsFromCheatGame")]
+    //    new public bool IsFromCheatGame
+    //    {
+    //        [NewMember]
+    //        get { return false; }
+    //        [NewMember]
+    //        set { return; }
+    //    }
+    //}
 }

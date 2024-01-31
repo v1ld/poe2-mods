@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchworkEqualInactiveParty
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickLoadMostRecentSavedGame", "QuickLoadMostRecentSavedGame\QuickLoadMostRecentSavedGame.csproj", "{DAE10145-5840-4D0D-9C94-E5697E3B695C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DontAutosaveEveryLevel", "DontAutosaveEveryLevel\DontAutosaveEveryLevel.csproj", "{39C82535-010C-40C0-A4EF-05D5AB229404}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,12 @@ Global
 		{DAE10145-5840-4D0D-9C94-E5697E3B695C}.Publish|Any CPU.Build.0 = Publish|Any CPU
 		{DAE10145-5840-4D0D-9C94-E5697E3B695C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAE10145-5840-4D0D-9C94-E5697E3B695C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Publish|Any CPU.Build.0 = Publish|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C82535-010C-40C0-A4EF-05D5AB229404}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
